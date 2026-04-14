@@ -1,1 +1,7 @@
-pymupdf==1.27.2.2
+openai>=1.0.0
+faiss-cpu>=1.7.4
+numpy>=1.24.0
+python-dotenv>=1.0.0
+pymupdf>=1.23.0
+gradio>=4.0.0
+
