@@ -175,3 +175,6 @@ python scripts/rag_pipeline.py
 ## Notes
 - Python standard library imports (such as `os`, `sys`, `json`, `argparse`) are not listed in `requirements.txt`
 - Only third-party packages belong in `requirements.txt`
+
+<img width="1600" height="900" alt="WhatsApp Image 2026-04-15 at 11 25 16 PM" src="https://github.com/user-attachments/assets/4e1b5173-332c-4422-9c1b-53551061be55" />
+
