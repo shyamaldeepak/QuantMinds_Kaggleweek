@@ -5,10 +5,7 @@ It ingests PDFs, extracts text page by page, chunks and embeds content, indexes 
 and serves a Gradio chatbot UI with source-page citations.
 
 ## Team
-- Sai Sreenivas Putta
-- Shyamal Deepak Vempadapu
-- Emmanuel Nischay Gapti
-- Gopi Chandu Pallapu
+- Shyamal Deepak V
 
 ## What This Project Does
 - Ingests PDFs from `data/pdfs/`
