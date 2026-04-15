@@ -101,13 +101,13 @@ def main():
     # Save full corpus
     with open(output_file, 'w', encoding='utf-8') as f:
         json.dump(all_pages, f, indent=2, ensure_ascii=False)
-    print(f"✓ Saved full corpus to {output_file}")
+    print(f"+ Saved full corpus to {output_file}")
     
 
     sample_pages = all_pages[:10]
     with open(sample_file, 'w', encoding='utf-8') as f:
         json.dump(sample_pages, f, indent=2, ensure_ascii=False)
-    print(f"✓ Saved sample to {sample_file}")
+    print(f"+ Saved sample to {sample_file}")
     
 
     total_pages = len(all_pages)

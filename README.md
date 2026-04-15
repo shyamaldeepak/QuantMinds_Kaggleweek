@@ -18,12 +18,17 @@ and serves a Gradio chatbot UI with source-page citations.
 - Builds a FAISS index for retrieval
 - Answers user questions using retrieved context only
 - Shows source PDF pages in the UI
+- **NEW**: FastMCP server integration for live web searching and dynamic database updates.
+- **NEW**: Multi-Agent Orchestrator with Human-in-the-Loop (HITL) workflows and Visualizer agent.
 
 ## Project Structure
 ```text
 QuantMinds/
 	app/
-		app.py                # Gradio UI
+		app.py                # Gradio UI with Multi-Agent Agentic Toggle
+		agents.py             # Supervisor Orchestrator, Internal Research, Fact Check, Synthesizer & Visualizer Agents
+		main.py               # Human-in-the-Loop (HITL) CLI entrypoint
+		mcp_server.py         # FastMCP Server providing web search, graph rendering, and DB injection tools
 		evaluate.py           # Evaluation runner
 	data/
 		pdfs/                 # Input PDFs
@@ -108,8 +113,22 @@ Then the UI opens.
 - Two-pane interface:
 	- Left: chat interaction
 	- Right: source PDF pages for latest answer
+- **Agentic Toggle:** A dedicated checkbox allows users to activate the Multi-Agent framework, overriding simple RAG with live validation, cross-referencing, and chart generation via FastMCP!
 - Query result caching in memory for repeated questions during the same run
 - Index/chunks are loaded once per server process and reused
+
+## Multi-Agent Architecture (NEW)
+QuantMinds now supports a sophisticated orchestrated flow using OpenAI logic combined with the Model Context Protocol (MCP).
+- **Agent 1 (Internal Researcher):** Queries the FAISS RAG index for internal context.
+- **Agent 2 (External Fact Checker):** Spawns `mcp_server.py` to cross-validate output against live web results via DuckDuckGo and Wikipedia.
+- **Agent 3 (Synthesizer):** Fuses the internal knowledge and external verifications into a final structured answer.
+- **Agent 4 (Visualizer):** Scans the answer for quantitative comparative data and uses the MCP `generate_graph` tool to export actionable matplotlib `.png` charts automatically.
+
+### Running Human-in-the-Loop (HITL)
+To experience the orchestrated flow step-by-step and provide manual feedback to the agents between actions, use the CLI application:
+```bash
+python app/main.py
+```
 
 ## Evaluation
 Run evaluation suite:

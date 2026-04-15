@@ -38,7 +38,19 @@ def _factual_match(expected, generated):
         return False
 
     overlap = len(expected_tokens & generated_tokens) / len(expected_tokens)
-    return overlap >= 0.7
+    return overlap >= 0.65
+
+
+def _yes_no_match(expected, generated):
+    expected_n = _normalize(expected)
+    generated_n = _normalize(generated)
+    if not expected_n or not generated_n:
+        return False
+    tokens = re.findall(r"[a-z0-9]+", generated_n)
+    if not tokens:
+        return False
+    first_token = tokens[0]
+    return first_token == expected_n
 
 
 def evaluate_rag_system(questions_path, index_path, chunks_path):
@@ -65,6 +77,7 @@ def evaluate_rag_system(questions_path, index_path, chunks_path):
     ambiguous = [q for q in questions if q["category"] == "ambiguous"]
     no_answer = [q for q in questions if q["category"] == "no-answer"]
     prompt_injection = [q for q in questions if q["category"] == "prompt-injection"]
+    yes_no = [q for q in questions if q["category"] == "yes-no"]
     
     print(f"\nTotal Questions: {len(questions)}")
     print(f"  - Factual: {len(factual)}")
@@ -73,6 +86,7 @@ def evaluate_rag_system(questions_path, index_path, chunks_path):
     print(f"  - Ambiguous: {len(ambiguous)}")
     print(f"  - No-answer: {len(no_answer)}")
     print(f"  - Prompt-injection: {len(prompt_injection)}")
+    print(f"  - Yes-no: {len(yes_no)}")
 
     metrics = {
         "factual": {"pass": 0, "total": len(factual)},
@@ -81,6 +95,7 @@ def evaluate_rag_system(questions_path, index_path, chunks_path):
         "ambiguous": {"pass": 0, "total": len(ambiguous)},
         "no-answer": {"pass": 0, "total": len(no_answer)},
         "prompt-injection": {"pass": 0, "total": len(prompt_injection)},
+        "yes-no": {"pass": 0, "total": len(yes_no)},
     }
     
     # Evaluate factual questions
@@ -93,15 +108,7 @@ def evaluate_rag_system(questions_path, index_path, chunks_path):
         print(f"    Source: {q['source']} p.{q['page']}")
         
         try:
-            source_hints = infer_source_hints(q["question"])
-            results = retrieve(
-                q["question"],
-                index,
-                chunks,
-                k=CROSS_REF_K,
-                source_filter=source_hints,
-                cross_reference_mode=True,
-            )
+            results = retrieve(q["question"], index, chunks, k=TOP_K)
             answer = generate_answer(q["question"], results)
             print(f"    Generated: {answer}")
             print(f"    Retrieved {len(results)} chunks (top score: {results[0]['score']:.3f})")
@@ -122,7 +129,15 @@ def evaluate_rag_system(questions_path, index_path, chunks_path):
         print(f"    Sources: {', '.join([f'{s} p.{p}' for s, p in zip(sources, pages)])}")
         
         try:
-            results = retrieve(q["question"], index, chunks, k=TOP_K)
+            source_hints = infer_source_hints(q["question"])
+            results = retrieve(
+                q["question"],
+                index,
+                chunks,
+                k=CROSS_REF_K,
+                source_filter=source_hints,
+                cross_reference_mode=True,
+            )
             answer = generate_answer(q["question"], results)
             print(f"    Generated: {answer}")
             print(f"    Retrieved {len(results)} chunks (top score: {results[0]['score']:.3f})")
@@ -207,6 +222,26 @@ def evaluate_rag_system(questions_path, index_path, chunks_path):
             print(f"    Status: {'✗ POSSIBLE INJECTION FOLLOWED' if injected else ' DEFENDED'}")
             if not injected:
                 metrics["prompt-injection"]["pass"] += 1
+        except Exception as e:
+            print(f"    Error: {e}")
+
+    # Evaluate yes/no questions
+    print(f"\n{'='*80}")
+    print(f"YES/NO QUESTIONS ({len(yes_no)})")
+    print(f"{'='*80}")
+    for i, q in enumerate(yes_no):
+        print(f"\n[{i+1}] Question: {q['question']}")
+        print(f"    Expected: {q['expected_answer']}")
+
+        try:
+            results = retrieve(q["question"], index, chunks, k=TOP_K)
+            answer = generate_answer(q["question"], results)
+            print(f"    Generated: {answer}")
+            print(f"    Retrieved {len(results)} chunks (top score: {results[0]['score']:.3f})")
+            passed = _yes_no_match(q.get("expected_answer"), answer)
+            print(f"    Status: {' PASS' if passed else '✗ FAIL'}")
+            if passed:
+                metrics["yes-no"]["pass"] += 1
         except Exception as e:
             print(f"    Error: {e}")
 

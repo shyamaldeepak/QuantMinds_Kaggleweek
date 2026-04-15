@@ -1,0 +1,136 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap');
+
+:root {
+    --qm-bg-1: #f6eefc;
+    --qm-bg-2: #fde5ee;
+    --qm-bg-3: #fff2cc;
+    --qm-bg-4: #ece9ff;
+    --qm-panel: rgba(255, 255, 255, 0.84);
+    --qm-panel-strong: rgba(255, 255, 255, 0.94);
+    --qm-text: #102018;
+    --qm-subtle: #3f5a4d;
+    --qm-accent: #1f8a5b;
+    --qm-accent-2: #166a44;
+    --qm-border: rgba(16, 32, 24, 0.12);
+}
+
+.gradio-container {
+    font-family: 'Outfit', sans-serif !important;
+    color: var(--qm-text) !important;
+    background:
+        radial-gradient(circle at 12% 8%, rgba(126, 87, 194, 0.38), transparent 36%),
+        radial-gradient(circle at 88% 14%, rgba(244, 180, 0, 0.34), transparent 38%),
+        radial-gradient(circle at 72% 82%, rgba(233, 30, 99, 0.22), transparent 42%),
+        radial-gradient(circle at 24% 76%, rgba(149, 117, 205, 0.24), transparent 40%),
+        linear-gradient(140deg, var(--qm-bg-1) 0%, var(--qm-bg-2) 38%, var(--qm-bg-3) 72%, var(--qm-bg-4) 100%);
+    min-height: 100vh;
+}
+
+.qm-shell {
+    max-width: 1280px;
+    margin: 1rem auto;
+    border: 1px solid var(--qm-border);
+    background: var(--qm-panel);
+    border-radius: 20px;
+    backdrop-filter: blur(4px);
+    box-shadow: 0 24px 50px rgba(15, 35, 26, 0.12);
+    animation: fade-up 420ms ease-out;
+}
+
+.qm-header {
+    padding: 1rem 1.2rem 0.7rem 1.2rem;
+}
+
+.qm-title {
+    margin: 0;
+    font-size: clamp(1.3rem, 2.4vw, 1.9rem);
+    font-weight: 800;
+    line-height: 1.2;
+    color: #102018;
+}
+
+.qm-title h1 {
+    margin: 0;
+    color: #102018 !important;
+    font-size: clamp(1.3rem, 2.4vw, 1.9rem);
+    font-weight: 800;
+}
+
+.qm-card {
+    background: var(--qm-panel-strong);
+    border: 1px solid var(--qm-border);
+    border-radius: 16px;
+    padding: 1rem 1.1rem;
+    box-shadow: 0 10px 22px rgba(15, 35, 26, 0.06);
+}
+
+.qm-history-list {
+    min-height: 62vh;
+}
+
+.qm-history-actions {
+    gap: 0.45rem;
+}
+
+.qm-toolbar {
+    padding: 0 1.2rem 0.5rem 1.2rem;
+}
+
+.qm-toggle-btn {
+    max-width: 150px;
+    min-width: 120px;
+    font-size: 0.82rem !important;
+    padding: 0.35rem 0.6rem !important;
+}
+
+.qm-card h3,
+.qm-card h4 {
+    margin-top: 0;
+    margin-bottom: 0.45rem;
+}
+
+#chatbox {
+    height: 68vh;
+}
+
+#source-panel {
+    min-height: 68vh;
+}
+
+button.primary {
+    background: linear-gradient(120deg, var(--qm-accent), var(--qm-accent-2)) !important;
+    border: none !important;
+    color: #ffffff !important;
+    box-shadow: 0 8px 18px rgba(31, 138, 91, 0.28);
+}
+
+button.primary:hover {
+    filter: brightness(1.04);
+    transform: translateY(-1px);
+}
+
+@keyframes fade-up {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (max-width: 768px) {
+    .qm-shell {
+        margin: 0.5rem;
+        border-radius: 14px;
+    }
+
+    .qm-header {
+        padding: 1rem 1rem 0.35rem 1rem;
+    }
+
+    .qm-card {
+        padding: 0.85rem;
+    }
+}
